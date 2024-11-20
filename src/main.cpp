@@ -30,21 +30,21 @@ int main(int, char**){
     }
 
     imgui_config.showDemoWindow = false;
-    imgui_config.showMainWindow = false;
+    imgui_config.showMainWindow = true;
 
-    bool windowShouldClose = false;
+    app_config.windowShouldClose = false;
 
     SDL_RenderClear(sdl.renderer);
 
     SDL_Event e;
 
-    while (!windowShouldClose) {
+    while (!app_config.windowShouldClose) {
         while (SDL_PollEvent(&e) != 0) {
             ImGui_ImplSDL2_ProcessEvent(&e);
             switch (e.type)
             {
             case SDL_QUIT:
-                windowShouldClose = true;
+                app_config.windowShouldClose = true;
                 break;
             
             case SDL_KEYDOWN:

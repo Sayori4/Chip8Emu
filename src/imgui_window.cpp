@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <iostream>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
 
@@ -22,10 +23,23 @@ bool mainColorPicker3(const char* label, ImVec4* color, ImGuiColorEditFlags flag
 
 void showMainWindow(imgui_config* imgui_config, app_config* app_config) {
     ImGui::SetNextWindowBgAlpha(0.45f);
-    if (!ImGui::Begin("Chip-8 Emulator", &imgui_config->showMainWindow))
+    if (!ImGui::Begin("Chip-8 Emulator", &imgui_config->showMainWindow, ImGuiWindowFlags_MenuBar))
     {
         ImGui::End();
         return;
+    }
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+            ImGui::Separator();
+            if (ImGui::MenuItem("Quit", "Ctrl+W")) {
+                app_config->windowShouldClose = true;
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
     }
 
     ImGui::Text("Welcome to my chip-8 emulator.");

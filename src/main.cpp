@@ -7,6 +7,7 @@
 #include "imgui_emu.h"
 #include "sdl_emu.h"
 #include "app_config.h"
+#include "chip8_emu.h"
 
 int main(int, char**){
     int scale = 20;
@@ -15,6 +16,7 @@ int main(int, char**){
     imgui_config imgui_config;
     sdl_stuff sdl;
     app_config app_config;
+    chip8_emu chip8;
     
 
     if (start_app(&sdl, scale) != 0) {
@@ -55,8 +57,9 @@ int main(int, char**){
                     break;
                 case SDL_SCANCODE_F3:
                     imgui_config.showDemoWindow = !imgui_config.showDemoWindow;
-                
+                    break;
                 default:
+                    std::cout << "Unused scancode \n";
                     break;
                 }
 

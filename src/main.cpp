@@ -42,7 +42,7 @@ int main(int, char**){
 
     while (!app_config.windowShouldClose) {
         while (SDL_PollEvent(&e) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&e);
+            ImGui_ImplSDL2_ProcessEvent(&e);    //  Handle imgui events
             switch (e.type)
             {
             case SDL_QUIT:

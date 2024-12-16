@@ -12,3 +12,4 @@ struct chip8_emu{
 };
 
 bool init_chip8(chip8_emu* chip8);
+bool load_rom(chip8_emu chip8, char rom_name[]);

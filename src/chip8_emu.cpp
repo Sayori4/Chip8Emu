@@ -28,15 +28,17 @@ bool init_chip8(chip8_emu* chip8) {
     std::memcpy(&chip8->ram[0x50], font, sizeof(font)); //  Load font into chip8 memory
     
     chip8->pc = 0x200;  //  Set program counter to start on the chip8 entry point
+
+    return true;
 }
 
 bool load_rom(chip8_emu* chip8, char romName[]) {
-    if (chip8->romName == romName)
+    if (chip8->romName.compare(romName) == 0)
     {
         std::cout << "Rom file " << romName << " is currently running";
         return true;
     }
-    
+    chip8->romName = romName;
 
     std::ifstream romFile(romName, std::ios::binary);   //  Read the file in binary format
     if(!romFile) {      //  If romfile doesn't exist, exit this function

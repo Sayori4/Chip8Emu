@@ -30,7 +30,7 @@ void imgui_frame() {
     ImGui::NewFrame();
 }
 
-void imgui_show(imgui_config* imgui_config, app_config* app_config) {
+void imgui_show(imgui_config* imgui_config, app_config* app_config, sdl_stuff* sdl) {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     if (imgui_config->showDemoWindow) {
         ImGui::ShowDemoWindow(&imgui_config->showDemoWindow);
@@ -38,7 +38,7 @@ void imgui_show(imgui_config* imgui_config, app_config* app_config) {
     //  TODO: Add showing other windows
 
     if (imgui_config->showMainWindow) {
-        showMainWindow(imgui_config, app_config);
+        showMainWindow(imgui_config, app_config, sdl);
     }
     
 }

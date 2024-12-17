@@ -8,6 +8,7 @@
 #include "sdl_emu.h"
 #include "app_config.h"
 #include "chip8_emu.h"
+#include "nfd_emu.h"
 
 int main(int, char**){
     int scale = 20;
@@ -17,9 +18,12 @@ int main(int, char**){
     sdl_stuff sdl;
     app_config app_config;
     chip8_emu chip8;
-    
 
     if (start_app(&sdl, scale) != 0) {
+        return 1;
+    }
+
+    if (nfd_initialize() != 0) {
         return 1;
     }
 
@@ -72,7 +76,7 @@ int main(int, char**){
 
         imgui_frame();
 
-        imgui_show(&imgui_config, &app_config);
+        imgui_show(&imgui_config, &app_config, &sdl);
 
         ImGui::Render();
         set_bg_color(&sdl, &app_config);
@@ -82,6 +86,7 @@ int main(int, char**){
     }
 
     imgui_close();
+    nfd_close();
     kill_app(&sdl);
 
     return 0;

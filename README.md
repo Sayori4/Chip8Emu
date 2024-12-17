@@ -1,5 +1,7 @@
-# Chip-8 Emulator
-Emulator of Chip-8
+# Chip-8 Interpreter
+Interpreter of the chip 8 language done in cpp.
+
+![Chip8emu Image](./img/chip8emu.png)
 
 # Special Thanks
 [ImGui](https://github.com/ocornut/imgui) - For the GUI of the application

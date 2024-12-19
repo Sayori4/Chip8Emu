@@ -76,7 +76,7 @@ int main(int, char**){
 
         imgui_frame();
 
-        imgui_show(&imgui_config, &app_config, &sdl);
+        imgui_show(&imgui_config, &app_config, &sdl, &chip8);
 
         ImGui::Render();
         set_bg_color(&sdl, &app_config);

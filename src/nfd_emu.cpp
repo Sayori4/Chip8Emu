@@ -35,5 +35,5 @@ std::string nfd_openfile(sdl_stuff* sdl) {
         return fp;
         NFD_FreePathU8(outpath);
     }
-    
+    return "";
 }

@@ -7,6 +7,7 @@
 #include "imgui_window.h"
 #include "sdl_emu.h"
 #include "nfd_emu.h"
+#include "chip8_emu.h"
 
 bool mainColorPicker3(const char* label, ImVec4* color, ImGuiColorEditFlags flags = 0) {
     float col[3];
@@ -23,7 +24,7 @@ bool mainColorPicker3(const char* label, ImVec4* color, ImGuiColorEditFlags flag
     return res;
 }
 
-void showMainWindow(imgui_config* imgui_config, app_config* app_config, sdl_stuff* sdl) {
+void showMainWindow(imgui_config* imgui_config, app_config* app_config, sdl_stuff* sdl, chip8_emu* chip8) {
     ImGui::SetNextWindowBgAlpha(0.45f);
     if (!ImGui::Begin("Chip-8 Emulator", &imgui_config->showMainWindow, ImGuiWindowFlags_MenuBar))
     {
@@ -35,8 +36,9 @@ void showMainWindow(imgui_config* imgui_config, app_config* app_config, sdl_stuf
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Open", "Ctrl+O")) {
-                std::string gameName = nfd_openfile(sdl);
-                std::cout << "Game path: " << gameName << "\n";
+                app_config->gameName = nfd_openfile(sdl);
+                std::cout << "Game path: " << app_config->gameName << "\n";
+                load_rom(chip8, app_config->gameName);
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Quit", "Ctrl+W")) {
@@ -48,7 +50,7 @@ void showMainWindow(imgui_config* imgui_config, app_config* app_config, sdl_stuf
     }
 
     ImGui::Text("Welcome to my chip-8 emulator.");
-    ImGui::Text("Currently running rom: %s", "none"); //placeholder
+    ImGui::Text("Currently running rom: %s", chip8->romName); //placeholder
     
     mainColorPicker3("Background", &app_config->bg_color);
     // Currently unused

@@ -32,7 +32,7 @@ bool init_chip8(chip8_emu* chip8) {
     return true;
 }
 
-bool load_rom(chip8_emu* chip8, char romName[]) {
+bool load_rom(chip8_emu* chip8, std::string romName) {
     if (chip8->romName.compare(romName) == 0)
     {
         std::cout << "Rom file " << romName << " is currently running";
@@ -53,7 +53,7 @@ bool load_rom(chip8_emu* chip8, char romName[]) {
         std::cout << "Rom file " << romName << " is too large";
         return false;
     }
-    romFile.read((char*) &chip8->ram[0x200], romSize);  //  Read the romfile
+    romFile.read((char*) &chip8->ram[0x200], romSize);  //  Set Ram to the rom file
 
     return true;
 }

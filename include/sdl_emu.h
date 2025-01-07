@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include "app_config.h"
+#include <imgui.h>
 
 struct sdl_stuff {
     SDL_Window* window;
@@ -8,8 +8,8 @@ struct sdl_stuff {
 };
 
 
-int start_app(sdl_stuff* sdl, int scale);
+int start_sdl(sdl_stuff& sdl, int scale);
 
-void kill_app(sdl_stuff* sdl);
+void kill_sdl(sdl_stuff& sdl);
 
-void set_bg_color(sdl_stuff* sdl, app_config* app_config);
+void set_color(sdl_stuff& sdl, ImVec4 color);

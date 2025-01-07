@@ -17,12 +17,12 @@ void nfd_close() {
     NFD_Quit();
 }
 
-std::string nfd_openfile(sdl_stuff* sdl) {
+std::string nfd_openfile(sdl_stuff& sdl) {
     nfdu8char_t* outpath;
 
     nfdopendialogu8args_t open_args = {};
 
-    NFD_GetNativeWindowFromSDLWindow(sdl->window, &open_args.parentWindow);
+    NFD_GetNativeWindowFromSDLWindow(sdl.window, &open_args.parentWindow);
     
     nfdu8filteritem_t filter[1] = {{ "Chip 8 emulator game", "ch8" }};
 

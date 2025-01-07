@@ -12,14 +12,12 @@
 
 int main(int, char**){
     int scale = 20;
-    SDL_Window* window;
-    SDL_Renderer* renderer;
     imgui_config imgui_config;
     sdl_stuff sdl;
     app_config app_config;
     chip8_emu chip8;
 
-    if (start_app(&sdl, scale) != 0) {
+    if (start_sdl(sdl, scale) != 0) {
         return 1;
     }
 
@@ -27,11 +25,15 @@ int main(int, char**){
         return 1;
     }
 
+    if (init_chip8(chip8) == false) {
+        return 1;
+    }
+
     app_config.bg_color = ImVec4(0,0,0,1);
     app_config.fg_color = ImVec4(1,1,1,1);
     
 
-    if (imgui_init(&sdl) != 0) {
+    if (imgui_init(sdl) != 0) {
         return 1;
     }
 
@@ -56,15 +58,15 @@ int main(int, char**){
             case SDL_KEYDOWN:
                 switch (e.key.keysym.scancode)
                 {
-                case SDL_SCANCODE_F2:
-                    imgui_config.showMainWindow = !imgui_config.showMainWindow;
-                    break;
-                case SDL_SCANCODE_F3:
-                    imgui_config.showDemoWindow = !imgui_config.showDemoWindow;
-                    break;
-                default:
-                    std::cout << "Unused scancode \n";
-                    break;
+                    case SDL_SCANCODE_F2:
+                        imgui_config.showMainWindow = !imgui_config.showMainWindow;
+                        break;
+                    case SDL_SCANCODE_F3:
+                        imgui_config.showDemoWindow = !imgui_config.showDemoWindow;
+                        break;
+                    default:
+                        std::cout << "Unused scancode \n";
+                        break;
                 }
 
             default:
@@ -76,10 +78,10 @@ int main(int, char**){
 
         imgui_frame();
 
-        imgui_show(&imgui_config, &app_config, &sdl, &chip8);
+        imgui_show(imgui_config, app_config, sdl, chip8);
 
         ImGui::Render();
-        set_bg_color(&sdl, &app_config);
+        set_color(sdl, app_config.bg_color);
         SDL_RenderClear(sdl.renderer);
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), sdl.renderer);
         SDL_RenderPresent(sdl.renderer);
@@ -87,7 +89,7 @@ int main(int, char**){
 
     imgui_close();
     nfd_close();
-    kill_app(&sdl);
+    kill_sdl(sdl);
 
     return 0;
 }

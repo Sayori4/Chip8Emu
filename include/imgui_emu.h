@@ -10,7 +10,7 @@ struct imgui_config {
     bool enableKBInputs;
 };
 
-int imgui_init(sdl_stuff* sdl);
+int imgui_init(sdl_stuff& sdl);
 void imgui_frame();
-void imgui_show(imgui_config* imgui_config, app_config* app_config, sdl_stuff* sdl, chip8_emu* chip8);
+void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8);
 void imgui_close();

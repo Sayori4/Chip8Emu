@@ -8,4 +8,4 @@ int nfd_initialize();
 
 void nfd_close();
 
-std::string nfd_openfile(sdl_stuff* sdl);
+std::string nfd_openfile(sdl_stuff& sdl);

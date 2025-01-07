@@ -13,5 +13,6 @@ struct chip8_emu{
     std::string romName;    //  Only here so we can check if currently loaded rom is the same as the trying to load one, don't add anything below this.
 };
 
-bool init_chip8(chip8_emu* chip8);
-bool load_rom(chip8_emu* chip8, std::string rom_name);
+bool init_chip8(chip8_emu& chip8);
+bool load_rom(chip8_emu& chip8, std::string rom_name);
+bool cycle(chip8_emu& chip8);

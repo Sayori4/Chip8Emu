@@ -9,7 +9,7 @@
 #include "app_config.h"
 #include "chip8_emu.h"
 
-int imgui_init(sdl_stuff* sdl) {
+int imgui_init(sdl_stuff& sdl) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -19,8 +19,8 @@ int imgui_init(sdl_stuff* sdl) {
 
     ImGui::StyleColorsDark();
 
-    ImGui_ImplSDL2_InitForSDLRenderer(sdl->window, sdl->renderer);
-    ImGui_ImplSDLRenderer2_Init(sdl->renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(sdl.window, sdl.renderer);
+    ImGui_ImplSDLRenderer2_Init(sdl.renderer);
 
     return 0;
 }
@@ -31,14 +31,14 @@ void imgui_frame() {
     ImGui::NewFrame();
 }
 
-void imgui_show(imgui_config* imgui_config, app_config* app_config, sdl_stuff* sdl, chip8_emu* chip8) {
+void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8) {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-    if (imgui_config->showDemoWindow) {
-        ImGui::ShowDemoWindow(&imgui_config->showDemoWindow);
+    if (imgui_config.showDemoWindow) {
+        ImGui::ShowDemoWindow(&imgui_config.showDemoWindow);
     }
     //  TODO: Add showing other windows
 
-    if (imgui_config->showMainWindow) {
+    if (imgui_config.showMainWindow) {
         showMainWindow(imgui_config, app_config, sdl, chip8);
     }
     

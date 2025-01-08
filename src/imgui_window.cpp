@@ -61,12 +61,17 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
     // Currently unused
     mainColorPicker3("Foreground (unused)", app_config.fg_color);
 
-    ImGui::Text("Chip-8 Options (DEBUG)");
+    ImGui::SeparatorText("Chip-8 Data");
 
-    uint16_t opcode;
+    ImGui::Text("Program Counter: %i", chip8.pc);
+    ImGui::Text("Index Register: %i", chip8.i);
+
+    ImGui::SeparatorText("Chip-8 Debug");
 
     if (ImGui::Button("Read Next Opcode")) {
-        std::cout << "Read Opcode: " << opcode << "\n";
+        uint16_t opcode;
+        opcode = cycle(chip8);
+        std::cout << std::hex << "Read Opcode: " << std::showbase << opcode << "\n";
     }
 
     ImGui::End();

@@ -30,6 +30,8 @@ bool init_chip8(chip8_emu& chip8) {
     
     chip8.pc = 0x200;  //   Set program counter to start on the chip8 entry point
 
+    chip8.i = 0x0;
+
     chip8.romName = ""; //  ZeroOut the rom name 
 
     std::cout << "Initialized chip8\n";
@@ -66,6 +68,15 @@ bool load_rom(chip8_emu& chip8, std::string romName) {
     return true;
 }
 
-bool cycle(chip8_emu& chip8) {
-    
+u_int16_t cycle(chip8_emu& chip8) {
+    uint16_t opcode;
+
+    uint8_t memory1 = chip8.ram[chip8.pc];
+    uint8_t memory2 = chip8.ram[chip8.pc+1];
+
+    opcode = memory1 << 8 | memory2;
+
+    chip8.pc += 2;
+
+    return opcode;
 }

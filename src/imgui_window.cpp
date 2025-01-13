@@ -68,10 +68,13 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
 
     ImGui::SeparatorText("Chip-8 Debug");
 
+    if (ImGui::Button("Restart Machine")) {
+        init_chip8(chip8);
+    }
+
     if (ImGui::Button("Read Next Opcode")) {
         uint16_t opcode;
         opcode = cycle(chip8);
-        std::cout << std::hex << "Read Opcode: " << std::showbase << opcode << "\n";
     }
 
     ImGui::End();

@@ -78,5 +78,64 @@ u_int16_t cycle(chip8_emu& chip8) {
 
     chip8.pc += 2;
 
+    switch (opcode & 0xF000) {
+        case 0x0000:
+            switch (opcode & 0x00FF) {
+                case 0x00E0:
+                    std::cout << "Clear Screen" << "\n";
+                    break;
+                case 0x00EE:
+                    std::cout << "Break from subroutine" << "\n";
+                    break;
+                default:
+                    std::cout << std::hex << "Incorrect opcode: " << std::showbase << opcode << "\n";
+                    break;
+            }
+            break;
+        case 0x1000:
+            std::cout << "Jump to address " << (opcode & 0x0FFF) << "\n";
+            break;
+        case 0x2000:
+            std::cout << "Exec subroutine starting at " << (opcode & 0x0FFF) << "\n";
+            break;
+        case 0x3000:
+            std::cout << "Skip following instruction if value of register V" << (opcode & 0x0F00) << " equals " << (opcode & 0x00FF) << "\n";
+            break;
+        case 0x4000:
+            std::cout << "Skip following instruction if value of register V" << (opcode & 0x0F00) << " equals " << (opcode & 0x00FF) << "\n";
+            break;
+        case 0x5000:
+            std::cout << "Skip following instruction if value of register V" << (opcode & 0x0F00) << " equals register V" << (opcode & 0x00F0) << "\n";
+            break;
+        case 0x6000:
+            std::cout << "Store number " << (opcode & 0x00FF) << " in register V" << (opcode & 0x0F00) << "\n";
+            break;
+        case 0x7000:
+            std::cout << "Add value " << (opcode & 0x00FF) << " to register V" << (opcode & 0x0F00) << "\n";
+            break;
+        case 0x8000:
+            switch (opcode & 0x000F) {
+            case 0x0000:
+                std::cout << "Store value of register V" << (opcode & 0x00F0) << " in register V" << (opcode & 0x0F00) << "\n";
+                break;
+            case 0x0001:
+                std::cout << "Set register V" << (opcode & 0x0F00) << " to register V" << (opcode & 0x0F00) << " OR register V" << (opcode & 0x00F0) << "\n";
+                break;
+            case 0x0002:
+                std::cout << "Set register V" << (opcode & 0x0F00) << " to register V" << (opcode & 0x0F00) << " AND register V" << (opcode & 0x00F0) << "\n";
+                break;
+            case 0x0003:
+                std::cout << "Set register V" << (opcode & 0x0F00) << " to register V" << (opcode & 0x0F00) << " XOR register V" << (opcode & 0x00F0) << "\n";
+                break;
+            default:
+                std::cout << std::hex << "Incorrect opcode: " << std::showbase << opcode << "\n";
+                break;
+            }
+            break;
+        default:
+            std::cout << std::hex << "Incorrect opcode: " << std::showbase << opcode << "\n";
+            break;
+    }
+
     return opcode;
 }

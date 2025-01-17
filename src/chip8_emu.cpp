@@ -3,7 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
 #include "chip8_emu.h"
+#include "sdl_emu.h"
 
 bool init_chip8(chip8_emu& chip8) {
     std::fill(chip8.ram, chip8.ram+4096, 0);
@@ -31,8 +33,14 @@ bool init_chip8(chip8_emu& chip8) {
     chip8.pc = 0x200;  //   Set program counter to start on the chip8 entry point
 
     chip8.i = 0x0;
+    
+    chip8.stack_pointer = 0; // Clear the stack pointer
 
-    chip8.romName = ""; //  ZeroOut the rom name 
+    chip8.stack.clear();
+
+    chip8.romName = ""; //  ZeroOut the rom name
+
+    std::fill_n(chip8.V, 15, 0);
 
     std::cout << "Initialized chip8\n";
 
@@ -65,6 +73,11 @@ bool load_rom(chip8_emu& chip8, std::string romName) {
     }
     romFile.read((char*) &chip8.ram[0x200], romSize);  //  Set Ram to the rom file
 
+    return true;
+}
+
+bool draw(chip8_emu& chip8, sdl_stuff& sdl) {
+    // chip8.draw_flag = false;
     return true;
 }
 
@@ -127,6 +140,17 @@ u_int16_t cycle(chip8_emu& chip8) {
             case 0x0003:
                 std::cout << "Set register V" << (opcode & 0x0F00) << " to register V" << (opcode & 0x0F00) << " XOR register V" << (opcode & 0x00F0) << "\n";
                 break;
+            case 0x0004:
+                std::cout << "Add value of register V" << (opcode & 0x00F0) << " to register V" << (opcode & 0x0F00) << "\n";
+                break;
+            case 0x0005:
+                std::cout << "Subtract value of register V" << (opcode & 0x00F0) << " to register V" << (opcode & 0x0F00) << "\n";
+                break;
+            case 0x0006:
+                std::cout << "Store value of register V" << (opcode & 0x00F0) << " shifted right one bit in register V" << (opcode & 0x0F00) << "\n";
+                break;
+            // case 0x0007:
+            //     std::cout << 
             default:
                 std::cout << std::hex << "Incorrect opcode: " << std::showbase << opcode << "\n";
                 break;

@@ -21,5 +21,5 @@ struct chip8_emu{
 
 bool init_chip8(chip8_emu& chip8);
 bool load_rom(chip8_emu& chip8, std::string rom_name);
-uint16_t cycle(chip8_emu& chip8);
+bool cycle(chip8_emu& chip8);
 bool draw(chip8_emu& chip8, sdl_stuff& sdl);

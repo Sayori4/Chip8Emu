@@ -8,6 +8,7 @@
 #include "sdl_emu.h"
 #include "app_config.h"
 #include "chip8_emu.h"
+#include "app_info.h"
 
 int imgui_init(sdl_stuff& sdl) {
     IMGUI_CHECKVERSION();
@@ -31,7 +32,7 @@ void imgui_frame() {
     ImGui::NewFrame();
 }
 
-void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8) {
+void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8, app_info& app_info) {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     if (imgui_config.showDemoWindow) {
         ImGui::ShowDemoWindow(&imgui_config.showDemoWindow);
@@ -39,7 +40,7 @@ void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& s
     //  TODO: Add showing other windows
 
     if (imgui_config.showMainWindow) {
-        showMainWindow(imgui_config, app_config, sdl, chip8);
+        showMainWindow(imgui_config, app_config, sdl, chip8, app_info);
     }
     
 }

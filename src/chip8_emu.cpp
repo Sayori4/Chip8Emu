@@ -77,11 +77,15 @@ bool load_rom(chip8_emu& chip8, std::string romName) {
 }
 
 bool draw(chip8_emu& chip8, sdl_stuff& sdl) {
+    if (!chip8.draw_flag) {
+        return true;
+    }
+    
     // chip8.draw_flag = false;
     return true;
 }
 
-u_int16_t cycle(chip8_emu& chip8) {
+bool cycle(chip8_emu& chip8) {
     uint16_t opcode;
 
     uint8_t memory1 = chip8.ram[chip8.pc];

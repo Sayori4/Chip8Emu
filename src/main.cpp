@@ -103,8 +103,10 @@ int main(int, char**){
 
         float elapsedTime = (endPerf - startPerf) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
-        SDL_Delay(floor(16.666f - elapsedTime));
-
+        if (floor(16.666f - elapsedTime) > 0) {
+            SDL_Delay(floor(16.666f - elapsedTime));
+        }
+        
         Uint32 endTicks = SDL_GetTicks();
 
         app_info.frameTime = (endTicks - startTicks) / 1000.0f;

@@ -75,6 +75,11 @@
         "deque": "cpp",
         "fstream": "cpp",
         "iomanip": "cpp",
-        "numbers": "cpp"
-    }
+        "numbers": "cpp",
+        "__split_buffer": "cpp",
+        "any": "cpp",
+        "__hash_table": "cpp",
+        "execution": "cpp"
+    },
+    "todo-tree.tree.showBadges": false
 }

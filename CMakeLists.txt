@@ -4,6 +4,8 @@ project(chip_8_emulator VERSION 0.1.0 LANGUAGES C CXX)
 add_subdirectory(lib/imgui)
 add_subdirectory(lib/nativefiledialog-extended)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_executable(chip_8_emulator 
     "src/main.cpp"
     "src/imgui_emu.cpp"

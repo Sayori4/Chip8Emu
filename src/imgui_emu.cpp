@@ -1,19 +1,20 @@
 #include <SDL2/SDL.h>
-#include <imgui.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
+#include <imgui.h>
 
+#include "app_config.h"
+#include "app_info.h"
+#include "chip8_emu.h"
 #include "imgui_emu.h"
 #include "imgui_window.h"
 #include "sdl_emu.h"
-#include "app_config.h"
-#include "chip8_emu.h"
-#include "app_info.h"
 
-int imgui_init(sdl_stuff& sdl) {
+int imgui_init(sdl_stuff &sdl) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -32,17 +33,15 @@ void imgui_frame() {
     ImGui::NewFrame();
 }
 
-void imgui_show(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8, app_info& app_info) {
+void imgui_show(imgui_config &imgui_config, app_config &app_config, sdl_stuff &sdl, chip8_emu &chip8, app_info &app_info) {
     ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
     if (imgui_config.showDemoWindow) {
         ImGui::ShowDemoWindow(&imgui_config.showDemoWindow);
     }
-    //  TODO: Add showing other windows
 
     if (imgui_config.showMainWindow) {
         showMainWindow(imgui_config, app_config, sdl, chip8, app_info);
     }
-    
 }
 
 void imgui_close() {

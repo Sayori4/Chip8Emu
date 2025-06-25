@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <imgui.h>
+#include <string>
 
 struct app_config {
     bool isPaused;

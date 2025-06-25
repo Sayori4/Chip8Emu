@@ -1,17 +1,19 @@
-#include <iostream>
 #include <SDL2/SDL.h>
-#include <imgui.h>
+#include <SDL_events.h>
+#include <SDL_scancode.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
+#include <imgui.h>
+#include <iostream>
 
-#include "imgui_emu.h"
-#include "sdl_emu.h"
 #include "app_config.h"
-#include "chip8_emu.h"
-#include "nfd_emu.h"
 #include "app_info.h"
+#include "chip8_emu.h"
+#include "imgui_emu.h"
+#include "nfd_emu.h"
+#include "sdl_emu.h"
 
-int main(int, char**){
+int main(int, char **) {
     imgui_config imgui_config;
     sdl_stuff sdl;
     app_config app_config;
@@ -22,8 +24,8 @@ int main(int, char**){
     app_config.isPaused = true;
 
     app_config.scale = 20;
-    app_config.bg_color = ImVec4(0,0,0,1);
-    app_config.fg_color = ImVec4(1,1,1,1);
+    app_config.bg_color = ImVec4(0, 0, 0, 1);
+    app_config.fg_color = ImVec4(1, 1, 1, 1);
 
     if (start_sdl(sdl, app_config.scale) != 0) {
         return 1;
@@ -36,7 +38,7 @@ int main(int, char**){
     if (init_chip8(chip8) == false) {
         return 1;
     }
-    
+
     if (imgui_init(sdl) != 0) {
         return 1;
     }
@@ -54,48 +56,153 @@ int main(int, char**){
         Uint32 startTicks = SDL_GetTicks();
         Uint64 startPerf = SDL_GetPerformanceCounter();
 
+        //  TODO: add the keypad controls
+
         while (SDL_PollEvent(&e) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&e);    //  Handle imgui events
-            switch (e.type)
-            {
-            case SDL_QUIT:
-                app_config.windowShouldClose = true;
-                break;
-            
-            case SDL_KEYDOWN:
-                switch (e.key.keysym.scancode)
-                {
+            ImGui_ImplSDL2_ProcessEvent(&e); //  Handle imgui events
+            if (e.key.repeat == false) {
+                switch (e.type) {
+                case SDL_QUIT:
+                    app_config.windowShouldClose = true;
+                    break;
+
+                case SDL_KEYDOWN:
+                    switch (e.key.keysym.scancode) {
                     case SDL_SCANCODE_F2:
                         imgui_config.showMainWindow = !imgui_config.showMainWindow;
                         break;
                     case SDL_SCANCODE_F3:
                         imgui_config.showDemoWindow = !imgui_config.showDemoWindow;
                         break;
-                    default:
-                        std::cout << "Unused scancode: " << e.key.keysym.scancode << "\n";
+                    case SDL_SCANCODE_1:
+                        chip8.keypad[0x1] = true;
                         break;
+                    case SDL_SCANCODE_2:
+                        chip8.keypad[0x2] = true;
+                        break;
+                    case SDL_SCANCODE_3:
+                        chip8.keypad[0x3] = true;
+                        break;
+                    case SDL_SCANCODE_4:
+                        chip8.keypad[0xc] = true;
+                        break;
+                    case SDL_SCANCODE_Q:
+                        chip8.keypad[0x4] = true;
+                        break;
+                    case SDL_SCANCODE_W:
+                        chip8.keypad[0x5] = true;
+                        break;
+                    case SDL_SCANCODE_E:
+                        chip8.keypad[0x6] = true;
+                        break;
+                    case SDL_SCANCODE_R:
+                        chip8.keypad[0xd] = true;
+                        break;
+                    case SDL_SCANCODE_A:
+                        chip8.keypad[0x7] = true;
+                        break;
+                    case SDL_SCANCODE_S:
+                        chip8.keypad[0x8] = true;
+                        break;
+                    case SDL_SCANCODE_D:
+                        chip8.keypad[0x9] = true;
+                        break;
+                    case SDL_SCANCODE_F:
+                        chip8.keypad[0xe] = true;
+                        break;
+                    case SDL_SCANCODE_Z:
+                        chip8.keypad[0xa] = true;
+                        break;
+                    case SDL_SCANCODE_X:
+                        chip8.keypad[0x0] = true;
+                        break;
+                    case SDL_SCANCODE_C:
+                        chip8.keypad[0xb] = true;
+                        break;
+                    case SDL_SCANCODE_V:
+                        chip8.keypad[0xf] = true;
+                        break;
+                    default:
+                        if (app_config.isDebug)
+                            std::cout << "Unused KeyDown scancode: " << e.key.keysym.scancode << "\n";
+                        break;
+                    }
+                    break;
+                case SDL_KEYUP:
+                    switch (e.key.keysym.scancode) {
+                    case SDL_SCANCODE_1:
+                        chip8.keypad[0x1] = false;
+                        break;
+                    case SDL_SCANCODE_2:
+                        chip8.keypad[0x2] = false;
+                        break;
+                    case SDL_SCANCODE_3:
+                        chip8.keypad[0x3] = false;
+                        break;
+                    case SDL_SCANCODE_4:
+                        chip8.keypad[0xc] = false;
+                        break;
+                    case SDL_SCANCODE_Q:
+                        chip8.keypad[0x4] = false;
+                        break;
+                    case SDL_SCANCODE_W:
+                        chip8.keypad[0x5] = false;
+                        break;
+                    case SDL_SCANCODE_E:
+                        chip8.keypad[0x6] = false;
+                        break;
+                    case SDL_SCANCODE_R:
+                        chip8.keypad[0xd] = false;
+                        break;
+                    case SDL_SCANCODE_A:
+                        chip8.keypad[0x7] = false;
+                        break;
+                    case SDL_SCANCODE_S:
+                        chip8.keypad[0x8] = false;
+                        break;
+                    case SDL_SCANCODE_D:
+                        chip8.keypad[0x9] = false;
+                        break;
+                    case SDL_SCANCODE_F:
+                        chip8.keypad[0xe] = false;
+                        break;
+                    case SDL_SCANCODE_Z:
+                        chip8.keypad[0xa] = false;
+                        break;
+                    case SDL_SCANCODE_X:
+                        chip8.keypad[0x0] = false;
+                        break;
+                    case SDL_SCANCODE_C:
+                        chip8.keypad[0xb] = false;
+                        break;
+                    case SDL_SCANCODE_V:
+                        chip8.keypad[0xf] = false;
+                        break;
+                    default:
+                        if (app_config.isDebug)
+                            std::cout << "Unused KeyUp scancode: " << e.key.keysym.scancode << "\n";
+                        break;
+                    }
+                    break;
+                default:
+                    break;
                 }
-
-            default:
-                break;
             }
-            
-            
         }
 
-        if (!app_config.isPaused) {
-            //Cycle the cpu
+        if (!app_config.isPaused && chip8.romName != "") {
+            cycle(chip8, app_config.isDebug); //  Cycle The CPU
         }
 
         imgui_frame();
 
-        imgui_show(imgui_config, app_config, sdl, chip8, app_info);
+        imgui_show(imgui_config, app_config, sdl, chip8, app_info); //  show the UI created with ImGui
 
         ImGui::Render();
-        set_color(sdl, app_config.bg_color);
-        SDL_RenderClear(sdl.renderer);
-        set_color(sdl, app_config.fg_color);
-        draw(chip8, sdl);
+        set_color(sdl, app_config.bg_color); //  Set the background color
+        SDL_RenderClear(sdl.renderer);       //  Clear the screen
+        set_color(sdl, app_config.fg_color); //  Set the frontground color
+        draw_sdl(sdl, chip8, app_config);    //  Draw call (Draw onto the screen)
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), sdl.renderer);
         SDL_RenderPresent(sdl.renderer);
 
@@ -106,11 +213,11 @@ int main(int, char**){
         if (floor(16.666f - elapsedTime) > 0) {
             SDL_Delay(floor(16.666f - elapsedTime));
         }
-        
+
         Uint32 endTicks = SDL_GetTicks();
 
         app_info.frameTime = (endTicks - startTicks) / 1000.0f;
-        app_info.FPS = (1.0f / app_info.frameTime); 
+        app_info.FPS = (1.0f / app_info.frameTime);
     }
 
     imgui_close();

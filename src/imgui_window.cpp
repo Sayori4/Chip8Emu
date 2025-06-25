@@ -1,16 +1,16 @@
-#include <imgui.h>
-#include <iostream>
-#include <cstdint>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
+#include <cstdint>
+#include <imgui.h>
+#include <iostream>
 
+#include "chip8_emu.h"
 #include "imgui_emu.h"
 #include "imgui_window.h"
-#include "sdl_emu.h"
 #include "nfd_emu.h"
-#include "chip8_emu.h"
+#include "sdl_emu.h"
 
-bool mainColorPicker3(const char* label, ImVec4& color, ImGuiColorEditFlags flags = 0) {
+bool mainColorPicker3(const char *label, ImVec4 &color, ImGuiColorEditFlags flags = 0) {
     float col[3];
     col[0] = color.x;
     col[1] = color.y;
@@ -25,20 +25,18 @@ bool mainColorPicker3(const char* label, ImVec4& color, ImGuiColorEditFlags flag
     return res;
 }
 
-void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuff& sdl, chip8_emu& chip8, app_info& app_info) {
+void showMainWindow(imgui_config &imgui_config, app_config &app_config, sdl_stuff &sdl, chip8_emu &chip8, app_info &app_info) {
     ImGui::SetNextWindowBgAlpha(0.45f);
-    if (!ImGui::Begin("Chip-8 Emulator", &imgui_config.showMainWindow, ImGuiWindowFlags_MenuBar))
-    {
+    if (!ImGui::Begin("Chip-8 Emulator", &imgui_config.showMainWindow, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
         return;
     }
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("File"))
-        {
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open", "Ctrl+O")) {
                 app_config.gameName = nfd_openfile(sdl);
-                std::cout << "Game path: " << app_config.gameName << "\n";
+                if (app_config.isDebug)
+                    std::cout << "Game path: " << app_config.gameName << "\n";
                 load_rom(chip8, app_config.gameName);
             }
             ImGui::Separator();
@@ -56,7 +54,7 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
     ImGui::SeparatorText("Emulator Info");
 
     if (chip8.romName != "") {
-        ImGui::Text("Currently running rom: %s", chip8.romName.substr(chip8.romName.find_last_of("/")+1).c_str());
+        ImGui::Text("Currently running rom: %s", chip8.romName.substr(chip8.romName.find_last_of("/") + 1).c_str());
     } else {
         ImGui::Text("Currently running rom: %s", "None");
     }
@@ -71,7 +69,7 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
     ImGui::Text("Current State: %s", (app_config.isPaused) ? "Paused" : "Playing");
 
     ImGui::SeparatorText("Emulator Config");
-    
+
     mainColorPicker3("Background", app_config.bg_color);
     mainColorPicker3("Foreground", app_config.fg_color);
 
@@ -89,22 +87,22 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
 
     if (ImGui::TreeNode("Stack")) {
         ImGui::BeginListBox("");
-            for (uint16_t stack_num : chip8.stack) {
-                ImGui::Selectable(std::to_string(stack_num).c_str());
-            }
+        for (uint16_t stack_num : chip8.stack) {
+            ImGui::Selectable(std::to_string(stack_num).c_str());
+        }
         ImGui::EndListBox();
-        
+
         ImGui::TreePop();
     }
 
     if (ImGui::TreeNode("Registers")) {
-        if (ImGui::BeginTable("Table",2, ImGuiTableFlags_BordersInnerH)) {
+        if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInnerH)) {
             int counter = 0;
             for (uint8_t val : chip8.V) {
                 ImGui::TableNextRow();
 
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("Register %d", ++counter);
+                ImGui::Text("Register %d", counter++);
 
                 ImGui::TableSetColumnIndex(1);
                 ImGui::Text("%d", val);
@@ -122,25 +120,17 @@ void showMainWindow(imgui_config& imgui_config, app_config& app_config, sdl_stuf
             init_chip8(chip8);
         }
         ImGui::SameLine();
-        if (ImGui::Button("Read Next Opcode")) {
-            cycle(chip8);
-        }
-        ImGui::Separator();
-        ImGui::Text("Stack Tests");
-        if (ImGui::Button("Add to Stack")) {
-            chip8.stack.push_back(0x6969);
-            chip8.stack_pointer++;
+        if (ImGui::Button("Manual Clock")) {
+            cycle(chip8, true);
         }
         ImGui::SameLine();
-        if (ImGui::Button("Remove from Stack")) {
-            if (!chip8.stack.empty()) {
-                chip8.stack.pop_back();
-                chip8.stack_pointer--;
-            }
-            
+        if (ImGui::Button("Reset Program Counter")) {
+            chip8.pc = 0x200;
+        }
+        if (ImGui::Button("Clear Registers")) {
+            std::fill_n(chip8.V, 16, 0);
         }
     }
 
     ImGui::End();
 }
-

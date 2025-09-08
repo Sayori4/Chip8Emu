@@ -97,8 +97,6 @@ bool cycle(chip8_emu &chip8, bool show_debug) {
 
     chip8.pc += 2;
 
-    //  TODO: finish all opcodes
-
     switch (opcode & 0xF000) {
     case 0x0000:
         switch (opcode & 0x00FF) {
@@ -252,7 +250,6 @@ bool cycle(chip8_emu &chip8, bool show_debug) {
     case 0xD000: {
         if (show_debug)
             std::cout << "Draw sprite at position V" << regX << ", V" << regY << " with " << num(opcode) << " bytes of sprite data starting at the address stored in I\n";
-        //  TODO: finish the logic
         uint8_t Xpos = chip8.V[regX] & 63;
         uint8_t Ypos = chip8.V[regY] & 31;
         chip8.V[0xf] = 0;

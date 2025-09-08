@@ -1,32 +1,29 @@
-#include <SDL2/SDL.h>
-#include <SDL_rect.h>
-#include <SDL_render.h>
-#include <SDL_stdinc.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_rect.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_stdinc.h>
 #include <imgui.h>
 #include <iostream>
 
+#include "SDL3/SDL_video.h"
 #include "app_config.h"
 #include "chip8_emu.h"
 #include "sdl_emu.h"
 
 int start_sdl(sdl_stuff &sdl, int scale) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)) {
         std::cout << "Could not initialize SDL2: " << SDL_GetError() << "\n";
         return 1;
     }
 
-#ifdef SDL_HINT_IME_SHOW_UI
-    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
-#endif
-
-    sdl.window = SDL_CreateWindow("Chip-8 emulator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 64 * scale, 32 * scale, 0);
-    if (sdl.window == NULL) {
+    sdl.window = SDL_CreateWindow("Chip-8 emulator", 64 * scale, 32 * scale, 0);
+    if (sdl.window == nullptr) {
         std::cout << "Could not start a window: " << SDL_GetError() << "\n";
         return 1;
     }
 
-    sdl.renderer = SDL_CreateRenderer(sdl.window, -1, SDL_RENDERER_ACCELERATED);
-    if (sdl.renderer == NULL) {
+    sdl.renderer = SDL_CreateRenderer(sdl.window, nullptr);
+    if (sdl.renderer == nullptr) {
         std::cout << "Could not start a renderer: " << SDL_GetError() << "\n";
         return 1;
     }
@@ -35,8 +32,7 @@ int start_sdl(sdl_stuff &sdl, int scale) {
 }
 
 bool draw_sdl(sdl_stuff &sdl, chip8_emu &chip8, app_config &app_config) {
-    //  TODO: drawing code
-    SDL_Rect rect;
+    SDL_FRect rect;
     rect.x = 0;
     rect.y = 0;
     rect.w = app_config.scale;

@@ -1,23 +1,24 @@
-#include <SDL2/SDL.h>
-#include <SDL_events.h>
-#include <SDL_scancode.h>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_sdlrenderer2.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_scancode.h>
+#include <cmath>
 #include <imgui.h>
+#include <imgui_impl_sdl3.h>
+#include <imgui_impl_sdlrenderer3.h>
 #include <iostream>
 
 #include "app_config.h"
 #include "app_info.h"
 #include "chip8_emu.h"
+#include "fd_emu.h"
 #include "imgui_emu.h"
-#include "nfd_emu.h"
 #include "sdl_emu.h"
 
-int main(int, char **) {
+int main(int argc, char *argv[]) {
     imgui_config imgui_config;
     sdl_stuff sdl;
-    app_config app_config;
     chip8_emu chip8;
+    app_config app_config;
     app_info app_info;
 
     app_config.isDebug = true;
@@ -31,10 +32,6 @@ int main(int, char **) {
         return 1;
     }
 
-    if (nfd_initialize() != 0) {
-        return 1;
-    }
-
     if (init_chip8(chip8) == false) {
         return 1;
     }
@@ -42,6 +39,8 @@ int main(int, char **) {
     if (imgui_init(sdl) != 0) {
         return 1;
     }
+
+    fd_emu fd_emu(&chip8, &sdl);
 
     imgui_config.showDemoWindow = false;
     imgui_config.showMainWindow = true;
@@ -56,18 +55,16 @@ int main(int, char **) {
         Uint32 startTicks = SDL_GetTicks();
         Uint64 startPerf = SDL_GetPerformanceCounter();
 
-        //  TODO: add the keypad controls
-
         while (SDL_PollEvent(&e) != 0) {
-            ImGui_ImplSDL2_ProcessEvent(&e); //  Handle imgui events
+            ImGui_ImplSDL3_ProcessEvent(&e); //  Handle imgui events
             if (e.key.repeat == false) {
                 switch (e.type) {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     app_config.windowShouldClose = true;
                     break;
 
-                case SDL_KEYDOWN:
-                    switch (e.key.keysym.scancode) {
+                case SDL_EVENT_KEY_DOWN:
+                    switch (e.key.scancode) {
                     case SDL_SCANCODE_F2:
                         imgui_config.showMainWindow = !imgui_config.showMainWindow;
                         break;
@@ -124,12 +121,12 @@ int main(int, char **) {
                         break;
                     default:
                         if (app_config.isDebug)
-                            std::cout << "Unused KeyDown scancode: " << e.key.keysym.scancode << "\n";
+                            std::cout << "Unused KeyDown scancode: " << e.key.scancode << "\n";
                         break;
                     }
                     break;
-                case SDL_KEYUP:
-                    switch (e.key.keysym.scancode) {
+                case SDL_EVENT_KEY_UP:
+                    switch (e.key.scancode) {
                     case SDL_SCANCODE_1:
                         chip8.keypad[0x1] = false;
                         break;
@@ -180,7 +177,7 @@ int main(int, char **) {
                         break;
                     default:
                         if (app_config.isDebug)
-                            std::cout << "Unused KeyUp scancode: " << e.key.keysym.scancode << "\n";
+                            std::cout << "Unused KeyUp scancode: " << e.key.scancode << "\n";
                         break;
                     }
                     break;
@@ -196,22 +193,24 @@ int main(int, char **) {
 
         imgui_frame();
 
-        imgui_show(imgui_config, app_config, sdl, chip8, app_info); //  show the UI created with ImGui
+        imgui_show(imgui_config, app_config, sdl, chip8, app_info, fd_emu); //  show the UI created with ImGui
+
+        fd_emu.send_to_emu();
 
         ImGui::Render();
         set_color(sdl, app_config.bg_color); //  Set the background color
         SDL_RenderClear(sdl.renderer);       //  Clear the screen
         set_color(sdl, app_config.fg_color); //  Set the frontground color
         draw_sdl(sdl, chip8, app_config);    //  Draw call (Draw onto the screen)
-        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), sdl.renderer);
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), sdl.renderer);
         SDL_RenderPresent(sdl.renderer);
 
         Uint64 endPerf = SDL_GetPerformanceCounter();
 
         float elapsedTime = (endPerf - startPerf) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
-        if (floor(16.666f - elapsedTime) > 0) {
-            SDL_Delay(floor(16.666f - elapsedTime));
+        if (std::floor(16.666f - elapsedTime) > 0) {
+            SDL_Delay(std::floor(16.666f - elapsedTime));
         }
 
         Uint32 endTicks = SDL_GetTicks();
@@ -221,7 +220,6 @@ int main(int, char **) {
     }
 
     imgui_close();
-    nfd_close();
     kill_sdl(sdl);
 
     return 0;

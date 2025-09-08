@@ -1,13 +1,12 @@
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_sdlrenderer2.h>
+#include <backends/imgui_impl_sdl3.h>
+#include <backends/imgui_impl_sdlrenderer3.h>
 #include <cstdint>
 #include <imgui.h>
-#include <iostream>
 
 #include "chip8_emu.h"
+#include "fd_emu.h"
 #include "imgui_emu.h"
 #include "imgui_window.h"
-#include "nfd_emu.h"
 #include "sdl_emu.h"
 
 bool mainColorPicker3(const char *label, ImVec4 &color, ImGuiColorEditFlags flags = 0) {
@@ -25,7 +24,7 @@ bool mainColorPicker3(const char *label, ImVec4 &color, ImGuiColorEditFlags flag
     return res;
 }
 
-void showMainWindow(imgui_config &imgui_config, app_config &app_config, sdl_stuff &sdl, chip8_emu &chip8, app_info &app_info) {
+void showMainWindow(imgui_config &imgui_config, app_config &app_config, sdl_stuff &sdl, chip8_emu &chip8, app_info &app_info, fd_emu &fd_emu) {
     ImGui::SetNextWindowBgAlpha(0.45f);
     if (!ImGui::Begin("Chip-8 Emulator", &imgui_config.showMainWindow, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
@@ -34,10 +33,7 @@ void showMainWindow(imgui_config &imgui_config, app_config &app_config, sdl_stuf
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open", "Ctrl+O")) {
-                app_config.gameName = nfd_openfile(sdl);
-                if (app_config.isDebug)
-                    std::cout << "Game path: " << app_config.gameName << "\n";
-                load_rom(chip8, app_config.gameName);
+                fd_emu.nfd_openfile();
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Quit", "Ctrl+W")) {

@@ -4,6 +4,13 @@ project(chip_8_emulator VERSION 0.1.0 LANGUAGES C CXX)
 add_subdirectory(lib/imgui)
 add_subdirectory(lib/SDL)
 
+if (MINGW)
+    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    message("Compiling under mingw.")
+else()
+    message("Compiling without mingw.")
+ENDIF()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(chip_8_emulator 
